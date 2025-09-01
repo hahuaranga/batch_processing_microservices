@@ -1,4 +1,4 @@
-package com.example.batch.infrastructure.bacth;
+package com.example.batch.infrastructure.configuration;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -12,6 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import com.example.batch.infrastructure.bacth.AccessIdItemProcessor;
+import com.example.batch.infrastructure.bacth.ProcessingRequestListener;
+
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -52,6 +56,8 @@ public class BatchConfig {
                     }
                 }
             })
+            .faultTolerant() // ✅ Activar tolerancia a fallos
+            .skipLimit(100) // ✅ Máximo 1000 items pueden fallar            
             .taskExecutor(batchTaskExecutor) // Control de concurrencia aquí
             .build();
     }

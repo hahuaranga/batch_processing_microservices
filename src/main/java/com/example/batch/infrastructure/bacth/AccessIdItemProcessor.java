@@ -33,16 +33,21 @@ public class AccessIdItemProcessor implements ItemProcessor<String, String> {
 
     @Override
     public String process(String accessId) throws Exception {
-        // ✅ Reconstruir el ProcessingRequest desde ExecutionContext
-        ProcessingRequest request = createProcessingRequestFromExecutionContext();
-        
-        // Enviar a Spring Integration
-        processingChannel.send(MessageBuilder.withPayload(accessId)
-            .setHeader("processingRequest", request)
-            .build());
-        
-        log.info("📤 Procesando AccessId: " + accessId);
-        return accessId;
+        try {
+			// ✅ Reconstruir el ProcessingRequest desde ExecutionContext
+			ProcessingRequest request = createProcessingRequestFromExecutionContext();
+			
+			// Enviar a Spring Integration
+			processingChannel.send(MessageBuilder.withPayload(accessId)
+			    .setHeader("processingRequest", request)
+			    .build());
+			
+			log.info("📤 Procesando AccessId: " + accessId);
+			return accessId;
+		} catch (Exception e) {
+			log.warn("Failed to process AccessId: {}. Error: {}", accessId, e.getMessage());
+			return null; // ✅ Skipear este item individualmente
+		}
     }
 
     private ProcessingRequest createProcessingRequestFromExecutionContext() {

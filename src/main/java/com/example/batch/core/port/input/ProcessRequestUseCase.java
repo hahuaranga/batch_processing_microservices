@@ -1,5 +1,7 @@
 package com.example.batch.core.port.input;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.example.batch.core.domain.ProcessingRequest;
 
 /**
@@ -9,5 +11,5 @@ import com.example.batch.core.domain.ProcessingRequest;
  */
 
 public interface ProcessRequestUseCase {
-    void processAsync(ProcessingRequest request);
+	CompletableFuture<Void> processAsync(ProcessingRequest request);
 }

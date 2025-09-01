@@ -4,6 +4,8 @@ import com.example.batch.core.domain.ProcessingRequest;
 import com.example.batch.core.port.input.ProcessRequestUseCase;
 import com.jayway.jsonpath.JsonPath;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Author: hahuaranga@indracompany.com
@@ -19,6 +22,7 @@ import java.util.List;
  * File: ProcessingController.java
  */
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ProcessingController {
@@ -57,7 +61,13 @@ public class ProcessingController {
             );
             
             // Procesar async
-            processRequestUseCase.processAsync(request);
+            CompletableFuture<Void> future = processRequestUseCase.processAsync(request);
+            
+            // Se agrega callback
+            future.exceptionally(ex -> {
+                log.error("Error en processing async: " + ex.getMessage());
+                return null;
+            });
 
             return ResponseEntity.accepted().body("ACK - Procesamiento iniciado");
 
