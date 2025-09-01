@@ -1,6 +1,8 @@
 package com.example.batch.infrastructure.bacth;
 
 import com.example.batch.core.domain.ProcessingRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
@@ -17,8 +19,10 @@ import java.util.List;
  * File: AccessIdItemProcessor.java
  */
 
+@Slf4j
 @Component
 @StepScope // ✅ Para acceder al ExecutionContext
+@RequiredArgsConstructor
 public class AccessIdItemProcessor implements ItemProcessor<String, String> {
 
     private final MessageChannel processingChannel;
@@ -26,10 +30,6 @@ public class AccessIdItemProcessor implements ItemProcessor<String, String> {
     // ✅ Inyección del ExecutionContext
     @Value("#{stepExecution.jobExecution.executionContext}")
     private ExecutionContext executionContext;
-
-    public AccessIdItemProcessor(MessageChannel processingChannel) {
-        this.processingChannel = processingChannel;
-    }
 
     @Override
     public String process(String accessId) throws Exception {
@@ -41,7 +41,7 @@ public class AccessIdItemProcessor implements ItemProcessor<String, String> {
             .setHeader("processingRequest", request)
             .build());
         
-        System.out.println("📤 Procesando AccessId: " + accessId);
+        log.info("📤 Procesando AccessId: " + accessId);
         return accessId;
     }
 

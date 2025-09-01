@@ -5,6 +5,9 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
 /**
@@ -13,11 +16,13 @@ import java.util.List;
  * File: CustomAccessIdReader.java
  */
 
+@Slf4j
 @Component
 @StepScope // ✅ CRUCIAL: Para acceder al StepExecution
 public class CustomAccessIdReader implements ItemReader<String> {
 
     private List<String> accessIds;
+    
     private int currentIndex = 0;
 
     // ✅ Inyección del ExecutionContext via Spring Expression Language (SpEL)
@@ -49,9 +54,9 @@ public class CustomAccessIdReader implements ItemReader<String> {
         
         if (accessIds == null) {
             accessIds = List.of();
-            System.out.println("⚠️ No se encontraron accessIds en ExecutionContext");
+            log.info("⚠️ No se encontraron accessIds en ExecutionContext");
         } else {
-            System.out.println("✅ Reader inicializado con " + accessIds.size() + " AccessIds");
+        	log.info("✅ Reader inicializado con " + accessIds.size() + " AccessIds");
         }
     }
 

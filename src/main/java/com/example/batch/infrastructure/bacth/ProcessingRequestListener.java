@@ -4,6 +4,9 @@ import org.springframework.batch.core.JobExecutionListener;
 import org.springframework.stereotype.Component;
 import org.springframework.batch.core.JobExecution;
 import com.example.batch.core.domain.ProcessingRequest;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.batch.item.ExecutionContext;
 
 /**
@@ -12,6 +15,7 @@ import org.springframework.batch.item.ExecutionContext;
  * File: ProcessingRequestListener.java
  */
 
+@Slf4j
 @Component
 public class ProcessingRequestListener implements JobExecutionListener {
 
@@ -38,7 +42,7 @@ public class ProcessingRequestListener implements JobExecutionListener {
             executionContext.put("ultimoRadiusStart", currentRequest.ultimoRadiusStart());
             executionContext.put("ultimoRadiusStop", currentRequest.ultimoRadiusStop());
             
-            System.out.println("Datos cargados en ExecutionContext para " + 
+            log.info("Datos cargados en ExecutionContext para " + 
                               currentRequest.accessIds().size() + " AccessIds");
         }
     }
